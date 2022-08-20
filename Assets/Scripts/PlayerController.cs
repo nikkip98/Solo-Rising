@@ -1,11 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
-
+    [SerializeField]
     public float speed = .1f;
+
+    [SerializeField]
+    private NetworkVariable<Vector3> networkPositionDirection = new NetworkVariable<Vector3>();
+
+    private CharacterController characterController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,31 +22,37 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (transform.position.y >= 50) // Upper Boundary
+        if (IsServer)
         {
-            transform.position = new Vector3(transform.position.x, 50, 0);
-        }
-        else if (transform.position.y <= -48.8f) // Lower
-        {
-            transform.position = new Vector3(transform.position.x, -48.8f, 0);
         }
 
-        if (transform.position.x >= 50) // Right
+        if (IsClient && IsOwner)
         {
-            transform.position = new Vector3(50, transform.position.y, 0);
-        } 
-        else if (transform.position.x <=-48.8f) // Left
-        {
-            transform.position = new Vector3(-48.8f, transform.position.y, 0);
+            UpdateClient();
         }
 
+        UpdateServer();
+    }
 
+    private void UpdateServer()
+    {
+        transform.position = new Vector3(transform.position.x+networkPositionDirection.Value.x,
+            transform.position.y+networkPositionDirection.Value.y, 0.0f);
+    }
+
+    private void UpdateClient()
+    {
         float xDirection = Input.GetAxis("Horizontal");
         float yDirection = Input.GetAxis("Vertical");
 
-        Vector3 moveDirection = new Vector3(xDirection, yDirection, 0.0f);
+        var moveDirection = new Vector3(xDirection, yDirection, 0.0f);
 
-        transform.position += moveDirection * speed;
+        UpdateClientPositionServerRpc(moveDirection * speed);
+    }
+
+    [ServerRpc]
+    public void UpdateClientPositionServerRpc(Vector3 newPosition)
+    {
+        networkPositionDirection.Value = newPosition;
     }
 }
