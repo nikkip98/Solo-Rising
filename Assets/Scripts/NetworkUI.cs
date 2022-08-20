@@ -16,8 +16,6 @@ public class NetworkUI : MonoBehaviour
     [SerializeField]
     private GameObject buttonsPanel;
 
-    //[SerializeField]
-    //private GameObject menuCamera;
 
     void Start()
     {
@@ -62,6 +60,5 @@ public class NetworkUI : MonoBehaviour
     private void OnSuccessConnection()
     {
         buttonsPanel.SetActive(false);
-        //menuCamera.SetActive(false);
     }
 }
