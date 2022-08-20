@@ -5,7 +5,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Animator animator;
-    public float speed = .1f;
+    public float speed = 0f;
+    float horizontalMove = 0f;
+    float verticalMove = 0f;
+
+    //bool jump = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +20,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animator.SetFloat("HorizontalSpeed", Mathf.Abs(horizontalMove));
+        animator.SetFloat("VerticalSpeed", Mathf.Abs(verticalMove));
+
+        horizontalMove = Input.GetAxisRaw("Horizontal");
+        verticalMove = Input.GetAxisRaw("Vertical");
+
+        Vector3 moveDirection = new Vector3(horizontalMove, verticalMove, 0.0f);
+
+        transform.position += moveDirection * speed;
 
         if (transform.position.y >= 50) // Upper Boundary
         {
@@ -28,18 +42,15 @@ public class PlayerController : MonoBehaviour
         if (transform.position.x >= 50) // Right
         {
             transform.position = new Vector3(50, transform.position.y, 0);
-        } 
-        else if (transform.position.x <=-48.8f) // Left
+        }
+        else if (transform.position.x <= -48.8f) // Left
         {
             transform.position = new Vector3(-48.8f, transform.position.y, 0);
         }
 
-
-        float xDirection = Input.GetAxis("Horizontal");
-        float yDirection = Input.GetAxis("Vertical");
-
-        Vector3 moveDirection = new Vector3(xDirection, yDirection, 0.0f);
-
-        transform.position += moveDirection * speed;
+        //if (Input.GetButtonDown("Jump"))
+        //{
+        //    jump = true;
+        //}
     }
 }
