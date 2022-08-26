@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     Vector2 movementInput;
 
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
 
+    private NetworkVariable<Vector3> networkPositionDirection = new NetworkVariable<Vector3>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,18 +37,20 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //animator.SetFloat("HorizontalSpeed", Mathf.Abs(horizontalMove));
-        //animator.SetFloat("VerticalSpeed", Mathf.Abs(verticalMove));
 
-        //horizontalMove = Input.GetAxisRaw("Horizontal");
-        //verticalMove = Input.GetAxisRaw("Vertical");
+    // TODO: ERIK
+  //   void Update()
+  //   {
+		// if (IsServer)
+  //       {
 
-        //Vector3 moveDirection = new Vector3(horizontalMove, verticalMove, 0.0f);
+  //       }
 
-        //transform.position += moveDirection * speed;
-    }
+  //       if (IsClient && IsOwner)
+  //       {
+  //           UpdateClient();
+  //       }
+  //   }
 
     private void FixedUpdate()
     {
@@ -142,6 +147,7 @@ public class PlayerController : MonoBehaviour
         UnlockMovement();
         swordAttack.StopAttack();
     }
+
     public void LockMovement()
     {
         canMove = false;
@@ -151,4 +157,27 @@ public class PlayerController : MonoBehaviour
     {
         canMove = true;
     }
+
+    	// TODO: ERIK - REFACTOR 
+    // private void UpdateServer()
+    // {
+    //     transform.position = new Vector3(transform.position.x+networkPositionDirection.Value.x,
+    //         transform.position.y+networkPositionDirection.Value.y, 0.0f);
+    // }
+
+    // private void UpdateClient()
+    // {
+    //     float xDirection = Input.GetAxis("Horizontal");
+    //     float yDirection = Input.GetAxis("Vertical");
+
+    //     var moveDirection = new Vector3(xDirection, yDirection, 0.0f);
+
+    //     UpdateClientPositionServerRpc(moveDirection * speed);
+    // }
+
+    // [ServerRpc]
+    // public void UpdateClientPositionServerRpc(Vector3 newPosition)
+    // {
+    //     networkPositionDirection.Value = newPosition;
+    // }
 }
