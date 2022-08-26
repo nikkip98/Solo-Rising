@@ -11,6 +11,7 @@
 /[Mm]emoryCaptures/
 /UserSettings/
 /ProjectSettings/
+/Solo**
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
@@ -48,9 +49,13 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
+*.dll
 
 # Unity3D generated file on crash reports
 sysinfo.txt
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
 
 # Builds
 *.apk
